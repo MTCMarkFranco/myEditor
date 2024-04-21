@@ -1,0 +1,6 @@
+Yeah, 'cause I'm stupid.
+Hopefully.
+She can.
+Booyah, is that a word?
+Recognizer should be working at this point and writing to my file. What do you think?
+OK, it's working.
