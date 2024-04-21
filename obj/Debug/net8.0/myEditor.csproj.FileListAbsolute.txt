@@ -102,3 +102,4 @@ C:\projects\myEditor\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Cognitiv
 C:\projects\myEditor\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.CognitiveServices.Speech.extension.kws.ort.dll
 C:\projects\myEditor\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.CognitiveServices.Speech.extension.lu.dll
 C:\projects\myEditor\obj\Debug\net8.0\myEditor.csproj.Up2Date
+C:\projects\myEditor\obj\Debug\net8.0\myEditor.sourcelink.json

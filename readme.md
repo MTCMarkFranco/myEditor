@@ -20,4 +20,6 @@ dotnet add package Microsoft.Extensions.Configuration
 ```bash
 dotnet user-secrets set "SUB_KEY" "YourSubscriptionKey"
 dotnet user-secrets set "SVC_REGION" "YourServiceRegion"
+dotnet user-secrets set "AOI_KEY" "YOUR_KEY"
+dotnet user-secrets set "AOI_ENDPOINT" "https://<YOUR_ENDPOINT>.openai.azure.com/"
 ```
