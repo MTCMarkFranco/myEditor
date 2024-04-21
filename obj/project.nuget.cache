@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "QcK1CT7bdNzIF6QGnw9izCej6UY1mECw/B/tOO4jSnDti5u8w6K/Hdbxqcvz0KR+ZuYe1eyFwl2dLFMa6qNoWg==",
+  "dgSpecHash": "BQeEZQCJLONWgA1SKQO8OhHM4pBhuv6UJqYuGvheipRgiMA+x31lRGaVZ6CRnLLnMLJ6s5CVTnrfXnIOUc/nHA==",
   "success": true,
-  "projectFilePath": "C:\\projects\\myEditor\\myEditor.csproj",
+  "projectFilePath": "c:\\projects\\myEditor\\myEditor.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\marfra\\.nuget\\packages\\azure.ai.openai\\1.0.0-beta.14\\azure.ai.openai.1.0.0-beta.14.nupkg.sha512",
     "C:\\Users\\marfra\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",

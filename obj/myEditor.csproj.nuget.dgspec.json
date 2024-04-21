@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\projects\\myEditor\\myEditor.csproj": {}
+    "c:\\projects\\myEditor\\myEditor.csproj": {}
   },
   "projects": {
-    "C:\\projects\\myEditor\\myEditor.csproj": {
+    "c:\\projects\\myEditor\\myEditor.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\projects\\myEditor\\myEditor.csproj",
+        "projectUniqueName": "c:\\projects\\myEditor\\myEditor.csproj",
         "projectName": "myEditor",
-        "projectPath": "C:\\projects\\myEditor\\myEditor.csproj",
+        "projectPath": "c:\\projects\\myEditor\\myEditor.csproj",
         "packagesPath": "C:\\Users\\marfra\\.nuget\\packages\\",
-        "outputPath": "C:\\projects\\myEditor\\obj\\",
+        "outputPath": "c:\\projects\\myEditor\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
