@@ -50,7 +50,7 @@ namespace myEditor
                     // Get intent of the text. If the intent is to stop transcription then set Flag = true
                     if (await shouldStopTranscription(result.Text))
                     {
-                        Console.WriteLine("Shutting down transcription...s Good Bye!");
+                        Console.WriteLine("Shutting down transcription... Good Bye!");
                         flag = true;
                     }
                     else
@@ -100,7 +100,8 @@ namespace myEditor
                                        return a Json Object with a 'stop' key set to 
                                        true if the user wants to stop transcription.
                                        Otherwise, return a Json Object with a 'stop' 
-                                       key set to false.");
+                                       key set to false. Only return a valid Json Object."
+                                       );
             history.AddUserMessage(text);
             
             var chatCompletionService = Program.sk.GetRequiredService<IChatCompletionService>();
@@ -108,26 +109,33 @@ namespace myEditor
             OpenAIPromptExecutionSettings openAIPromptExecutionSettings = new()
             {
                 MaxTokens = 200,
-                Temperature = 0.1,
+                ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions,
+                Temperature = 0,
             };
 
-            var response = chatCompletionService.GetStreamingChatMessageContentsAsync(
+            var response = await chatCompletionService.GetChatMessageContentsAsync(
                                history,
                                executionSettings: openAIPromptExecutionSettings,
                                kernel: Program.sk);
 
-            await foreach (var message in response)
+            var message = response[0];
+
             {
                 if (message.Content != null && message.Content.Length > 0)
                 {
-                    var content = message.Content[0]?.ToString();
+                    var content = message.Content.Length > 0 ? message.Content.Trim('`').Trim('\n').Replace("json","") : null;
                     if (content != null)
                     {
-                        var stop = JsonSerializer.Deserialize<Dictionary<string, bool>>(content)?["stop"];
-                        if (stop.HasValue && stop.Value)
+                        try
                         {
-                            return true;
+                            var stop = JsonSerializer.Deserialize<Dictionary<string, bool>>(content)?["stop"];
+                            if (stop.HasValue && stop.Value)
+                            {
+                                return true;
+                            }
                         }
+                        catch {}
+                        
                     }
                 }
             }
