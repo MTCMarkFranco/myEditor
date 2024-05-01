@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
+using Microsoft.CognitiveServices.Speech.Audio;
 using Microsoft.SemanticKernel.Plugins.Core;
 using Microsoft.Extensions.Primitives;
 using System.Runtime.CompilerServices;
@@ -31,7 +32,12 @@ namespace myEditor
 
             // Speech SDK
             var config = SpeechConfig.FromSubscription(YourSubscriptionKey, YourServiceRegion);
-            var recognizer = new SpeechRecognizer(config);
+            config.SpeechRecognitionLanguage = "en-US"; // Set the speech recognition language to English
+            config.SpeechSynthesisLanguage = "fr-CA";
+            config.EnableDictation();
+
+            using var audioConfig = AudioConfig.FromDefaultMicrophoneInput();
+            using var recognizer = new SpeechRecognizer(config, audioConfig);
 
             // Semantic Kernel and Generative reasoning
             var skBuilder = Kernel.CreateBuilder();
@@ -39,56 +45,46 @@ namespace myEditor
             // Add the Azure OpenAI Chat Completion
             skBuilder.AddAzureOpenAIChatCompletion("GPT4", aoiEndPoint, aoiKey);
             Program.sk = skBuilder.Build();
-                        
-            // Start Main Loop
+
+            // Subscribe to events
+            recognizer.Recognizing += (s, e) => 
+            { 
+                Console.WriteLine($"RECOGNIZING: Text={e.Result.Text}"); 
+                
+                // if e.Result.Text is contains 'cancel' or 'stop' then stop transcription
+                if(e.Result.Text.Contains("cancel") || e.Result.Text.Contains("stop"))
+                {
+                    if(shouldStopTranscription(e.Result.Text).Result)
+                    {
+                        flag = true;
+                        // do not recognize
+
+                    }
+                }
+            };
+            recognizer.Recognized += (s, e) => { Console.WriteLine($"\nRECOGNIZED: Text={e.Result.Text}"); };
+            recognizer.Canceled += (s, e) => { Console.WriteLine($"\nCANCELED: Reason={e.Reason}"); };
+            recognizer.SessionStopped += (s, e) => { Console.WriteLine("\nSession stopped event."); };
+
+            // Start continuous recognition
+            await recognizer.StartContinuousRecognitionAsync();
+
+            // while flag
             while (!flag)
             {
-                var result = await recognizer.RecognizeOnceAsync();
-                
-                if (result.Reason == ResultReason.RecognizedSpeech)
-                {
-                    // Get intent of the text. If the intent is to stop transcription then set Flag = true
-                    if (await shouldStopTranscription(result.Text))
-                    {
-                        Console.WriteLine("Shutting down transcription... Good Bye!");
-                        flag = true;
-                    }
-                    else
-                    {
-                        Console.WriteLine(result.Text);
-                        
-                        if (writer == null)
-                        {
-                            writer = new StreamWriter("recording.txt", append: true) { AutoFlush = true };
-                        }
-
-                        writer.WriteLine(result.Text);
-                    }
-                }
-                else if (result.Reason == ResultReason.NoMatch)
-                {
-                    Console.WriteLine($"No transcribable speech detected. Listening...");
-                }
-                else if (result.Reason == ResultReason.Canceled)
-                {
-                    var cancellation = CancellationDetails.FromResult(result);
-                    Console.WriteLine($"CANCELED: Reason={cancellation.Reason}");
-
-                    if (cancellation.Reason == CancellationReason.Error)
-                    {
-                        Console.WriteLine($"CANCELED: ErrorCode={cancellation.ErrorCode}");
-                        Console.WriteLine($"CANCELED: ErrorDetails={cancellation.ErrorDetails}");
-                        Console.WriteLine($"CANCELED: Did you update the subscription info?");
-                    }
-
-                    flag = true;
-                }
             }
 
-            if (writer != null)
-            {
-                writer.Close();
-            }
+            Console.WriteLine("Stopping Transcription...");
+            await recognizer.StopContinuousRecognitionAsync();
+            // if (writer == null)
+            // {
+            //     writer = new StreamWriter("recording.txt", append: true) { AutoFlush = true };
+            // }
+
+            // if (writer != null)
+            // {
+            //     writer.Close();
+            // }
         }
 
       
